@@ -1,14 +1,3 @@
-terraform {
-  required_version = ">= 1.3.0"
-
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = ">= 5.44.0, < 6.0.0"
-    }
-  }
-}
-
 provider "aws" {
   region = "us-east-1"
 }
@@ -32,7 +21,7 @@ module "vpc" {
 
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "20.8.3"
+  version = "20.24.0"
 
   cluster_name    = var.cluster_name
   cluster_version = "1.29"
