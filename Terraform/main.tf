@@ -4,22 +4,23 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 5.47.0" # Force AWS provider to stay on v5.x
-    }
-    time = {
-      source  = "hashicorp/time"
+      version = "~> 5.47.0" # ✅ FORCE AWS v5.x
     }
     tls = {
-      source  = "hashicorp/tls"
+      source = "hashicorp/tls"
     }
-    cloudinit = {
-      source  = "hashicorp/cloudinit"
+    time = {
+      source = "hashicorp/time"
     }
     null = {
-      source  = "hashicorp/null"
+      source = "hashicorp/null"
+    }
+    cloudinit = {
+      source = "hashicorp/cloudinit"
     }
   }
 }
+
 
 provider "aws" {
   region = var.aws_region
