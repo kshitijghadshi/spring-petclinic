@@ -4,7 +4,19 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 5.47.0" # latest stable 5.x release
+      version = "~> 5.47.0" # Force AWS provider to stay on v5.x
+    }
+    time = {
+      source  = "hashicorp/time"
+    }
+    tls = {
+      source  = "hashicorp/tls"
+    }
+    cloudinit = {
+      source  = "hashicorp/cloudinit"
+    }
+    null = {
+      source  = "hashicorp/null"
     }
   }
 }
