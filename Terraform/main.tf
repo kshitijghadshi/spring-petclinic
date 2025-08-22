@@ -1,7 +1,21 @@
-provider "aws" {
-  region = "us-east-1"
+terraform {
+  required_version = ">= 1.3.0"
+
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 5.0"
+    }
+  }
 }
 
+provider "aws" {
+  region = var.aws_region
+}
+
+# --------------------------
+# VPC
+# --------------------------
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = "5.1.2"
@@ -15,33 +29,51 @@ module "vpc" {
   enable_dns_hostnames = true
   enable_dns_support   = true
 
-  # Enable public IP assignment for subnets
   map_public_ip_on_launch = true
 }
 
+# --------------------------
+# EKS Cluster
+# --------------------------
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "20.24.0"
 
   cluster_name    = var.cluster_name
   cluster_version = "1.29"
-  subnet_ids      = module.vpc.public_subnets
-  vpc_id          = module.vpc.vpc_id
 
-  eks_managed_node_groups = {
-    demo_nodes = {
-      instance_types = ["t2.medium"]
-      desired_size   = 1
-      max_size       = 1
-      min_size       = 1
+  vpc_id     = module.vpc.vpc_id
+  subnet_ids = module.vpc.public_subnets
 
-      disk_size = 10 # Small disk size (10GiB)
-    }
-  }
-
-  cluster_endpoint_public_access = true
+  cluster_endpoint_public_access  = true
   cluster_endpoint_private_access = true
 
   enable_cluster_creator_admin_permissions = true
 
+  eks_managed_node_groups = {
+    demo_nodes = {
+      instance_types = ["t2.medium"]
+
+      desired_size = 1
+      max_size     = 1
+      min_size     = 1
+
+      disk_size = 10
+    }
+  }
+}
+
+# --------------------------
+# Variables
+# --------------------------
+variable "aws_region" {
+  description = "AWS region"
+  type        = string
+  default     = "us-east-1"
+}
+
+variable "cluster_name" {
+  description = "EKS Cluster name"
+  type        = string
+  default     = "eks-demo"
 }
